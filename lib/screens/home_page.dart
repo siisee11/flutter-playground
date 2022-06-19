@@ -33,12 +33,36 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    _opacity = _scrollPosition < screenSize.height * 0.40
-        ? _scrollPosition / (screenSize.height * 0.40)
+    _opacity = _scrollPosition < screenSize.height * 0.20
+        ? _scrollPosition / (screenSize.height * 0.20)
         : 1;
 
     return Scaffold(
-      body: Column(
+      extendBodyBehindAppBar: true,
+      appBar: screenSize.width < 800
+          ? AppBar(
+              elevation: 0,
+              iconTheme: IconThemeData(color: Colors.grey),
+              backgroundColor: Colors.white.withOpacity(_opacity),
+              title: Text(
+                'Author',
+                style: TextStyle(
+                  color: Color(0xFF077bd7),
+                  fontSize: 26,
+                  fontFamily: 'Raleway',
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 3,
+                ),
+              ),
+            )
+          : PreferredSize(
+              preferredSize: Size(screenSize.width, 70),
+              child: TopBarContents(_opacity),
+            ),
+      drawer: MenuDrawer(),
+      body: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
           children: [
             Stack(
               children: [
@@ -52,13 +76,22 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-
+                Column(
+                  children: [
+                    FloatingQuickAccessBar(screenSize: screenSize),
+                    FeaturedHeading(screenSize: screenSize),
+                    FeaturedTiles(screenSize: screenSize),
+                    MainHeading(screenSize: screenSize),
+                    MainCarousel(),
+                    SizedBox(height: screenSize.height / 10),
+                    BottomBar()
+                  ],
+                )
               ],
             ),
-
           ],
         ),
-
+      ),
     );
   }
 }
